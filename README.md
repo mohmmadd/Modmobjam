@@ -49,7 +49,7 @@ For those who want to use another device, edit the GNU Radio block schema ``GRC/
 $ gnuradio-companion GRC/jammer_gen.grc
 ```
 
-Then you can configure the central frequency with the WX GUI to target a frequency. But this tool has also a feature to do it automatically.
+Then you can configure the central frequency with the QT GUI to target a frequency. But this tool has also a feature to do it automatically.
 
 ### Automatic smartjamming
 
