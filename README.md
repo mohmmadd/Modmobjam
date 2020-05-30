@@ -27,7 +27,23 @@ If you have a HackRF or any device compatible with osmocom drivers, you can dire
 $ python GRC/jammer_gen.py
 ```
 
-For those who want to use another device like USRP, edit the GNU Radio block schema ``GRC/jammer_gen.grc``:
+Note that compatible devices with `gr-osmosdr` are the following:
+
+* FunCube Dongle through libgnuradio-fcd
+* FUNcube Dongle Pro+ through gr-fcdproplus
+* sysmocom OsmoSDR Devices through libosmosdr
+* Nuand LLC bladeRF through libbladeRF library
+* Great Scott Gadgets HackRF through libhackrf
+* Ettus USRP Devices through Ettus UHD library
+* Fairwaves UmTRX through Fairwaves' fork of Ettus' UHD library
+* RFSPACE SDR-IQ, SDR-IP, NetSDR (incl. X2 option)
+* RTL2832U based DVB-T dongles through librtlsdr
+* RTL-TCP spectrum server (see librtlsdr project)
+* MSi2500 based DVB-T dongles through libmirisdr
+* SDRplay RSP through SDRplay API library
+* AirSpy R820t dongles through libairspy
+
+For those who want to use another device, edit the GNU Radio block schema ``GRC/jammer_gen.grc``:
 
 ```sh
 $ gnuradio-companion GRC/jammer_gen.grc
