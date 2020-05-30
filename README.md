@@ -1,10 +1,10 @@
 # Modmobjam
 
-A smart jamming proof of concept for mobile equipments that could be powered with [Modmobmap](https://github.com/Synacktiv/Modmobmap)
+A smart jamming proof of concept for mobile equipments that could be powered with [Modmobmap](https://github.com/PentHertz/Modmobmap)
 
 For more information, this little tool has been presented during SSTIC rump 2018:
 
-- english slides: https://www.synacktiv.com/ressources/sstic_rump_2018_modmobjam.pdf
+- english slides: https://penthertz.com/resources/sstic_rump_2018_modmobjam.pdf
 - french presentation: https://static.sstic.org/rumps2018/SSTIC_2018-06-14_P10_RUMPS_22.mp4
 
 ## Warning
@@ -15,7 +15,7 @@ You should be warned that Jamming is illegal and you're responsible for any dama
 
 - a radio devices that is enabled to transmit signal (HackRF, USRP, bladeRF, and so on.)
 - GNU Radio installed
-- Modmobmap to perform automatic smartjamming: https://github.com/Synacktiv/Modmobmap
+- Modmobmap to perform automatic smartjamming: https://github.com/PentHertz/Modmobmap
 
 ## Usage
 
@@ -37,7 +37,7 @@ Then you can configure the central frequency with the WX GUI to target a frequen
 
 ### Automatic smartjamming
 
-To automate jamming, you can first get a list of we the [Modmobmap](https://github.com/Synacktiv/Modmobmap) that saves a JSON file after monitoring surrounding cells in a precise location. This JSON file looks as follows:
+To automate jamming, you can first get a list of we the [Modmobmap](https://github.com/PentHertz/Modmobmap) that saves a JSON file after monitoring surrounding cells in a precise location. This JSON file looks as follows:
 
 ```sh
 $ cat cells_<generated timestamp>.json 
@@ -76,6 +76,6 @@ $ python smartjam_rpcclient.py -f cells_<generated timestamp>.json
 
 Then leverage the gain for transmission and you should observe that a lot of noise is overflowing the targeted cells with gaussian noise.
 
-![Jamming session](https://raw.githubusercontent.com/Synacktiv/Modmobjam/master/imgs/jamming_session.png)
+![Jamming session](https://raw.githubusercontent.com/PentHertz/Modmobjam/master/imgs/jamming_session.png)
 
 Please note that the delay between each targeted cell can be set with a provided arguments '-d' (see arguments helper). 
