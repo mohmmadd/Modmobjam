@@ -3,7 +3,7 @@
 #
 # ----------------------------------------------------------------------------
 # "THE BEER-WARE LICENSE" (Revision 42):
-# <sebastien.dudek(<@T>)synacktiv.com> wrote this file. As long as you retain this notice you
+# <sebastien.dudek(<@T>)penthertz.com> wrote this file. As long as you retain this notice you
 # can do whatever you want with this stuff. If we meet some day, and you think
 # this stuff is worth it, you can buy me a beer in return FlUxIuS ;)
 # ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@ from __future__ import print_function
 import time
 import json
 import random
-import xmlrpclib
+import xmlrpc.client
 import argparse
 from utils.eu_arfcn_calc import *
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     filterplmn = args.filterplmn
     bandwidth = args.bandwidth
 
-    s = xmlrpclib.Server("http://%s:%s" % (host, port))
+    s = xmlrpc.client.ServerProxy("http://%s:%s" % (host, port))
     
     with open(filepath) as f:
         modmobdata = json.load(f)
