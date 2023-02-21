@@ -20,6 +20,10 @@ import xmlrpc.client
 import argparse
 from utils.eu_arfcn_calc import *
 
+def superprintofdeath(message):
+    print('\r'+message, end='\r\r\r\r\r\r\r', flush=True)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Modmodjam - Software-Defined Radio Jammer')
     parser.add_argument('-s', '--host', dest='host', default='localhost',
@@ -80,8 +84,12 @@ if __name__ == "__main__":
                     cbandwidth = int(val['bandwidth'].replace('MHz',''))
             try:
                 if ctype == '3G':
+                    if band is None:
+                        band = findband(table_uarfcn, findex)
                     downlink, uplink = uarfcn2freq(int(band), findex, None)
                 elif ctype == '4G':
+                    if band is None:
+                        band = findband(table_earfcn, findex)
                     downlink, uplink = earfcn2freq(int(band), findex, None)
                 elif ctype == '2G':
                     pass
@@ -90,19 +98,21 @@ if __name__ == "__main__":
                     cent_freq = downlink
                     if linkjam == 1:
                         cent_freq = uplink
-                    t_freqs[key] = {    'freq' : cent_freq,
+                    t_freqs[key] = {    'freq' : round(cent_freq),
                                         'bandwidth' : cbandwidth } 
             except Exception as e:
                 print (e)
     while True:
         try:
             for key, val in t_freqs.items():
-                print ("[+] Jamming cell {cell} central frequency at {freq} MHz with {bandwidth} MHz bandwidth".format(cell=key, freq=val['freq'], bandwidth=val['bandwidth']))
-                s.set_var_cent_freq(val['freq']*1000000)
-                s.set_var_bandwidth(val['bandwidth']*1000000)
+                message="[+] Jamming cell {cell} central frequency at {freq} MHz with {bandwidth} MHz bandwidth".format(cell=key, freq=val['freq'], bandwidth=val['bandwidth'])
+                superprintofdeath(message)
+                s.set_var_cent_freq(val['freq']*1e6)
+                s.set_var_bandwidth(val['bandwidth']*1e6)
                 time.sleep(delay)
-        except:
+        except Exception as e:
             print('Stopping jammer...')
             state = False
+            #print(e)
             break
 

@@ -426,6 +426,12 @@ table_uarfcn = {
 # Functions
 #
 
+
+def findband(indextable, dl_frequency):
+    for i,j in indextable.items():
+        if dl_frequency <= j['DL_range'][1] and dl_frequency >= j['DL_range'][0]:
+            return i
+
 def uarfcn2freq(band, dl_uarfcn=None, ul_uarfcn=None):
     '''
         in(1): int band index,
