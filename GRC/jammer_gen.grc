@@ -1,6 +1,7 @@
 options:
   parameters:
     author: ''
+    catch_exceptions: 'True'
     category: Custom
     cmake_opt: ''
     comment: ''
@@ -39,18 +40,18 @@ blocks:
     gui_hint: ''
     label: Bandwidth
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: 2e6
     step: '10'
     stop: 50e6
     value: var_bandwidth
-    widget: slider
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [882, 19]
+    coordinate: [736, 20.0]
     rotation: 0
     state: true
 - name: bb_gain
@@ -60,13 +61,13 @@ blocks:
     gui_hint: ''
     label: BB gain
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '10'
     step: '10'
     stop: '60'
     value: var_bb_gain
-    widget: slider
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
@@ -81,13 +82,13 @@ blocks:
     gui_hint: ''
     label: Freq
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: 900e6
     step: '500'
     stop: 2200e6
     value: var_cent_freq
-    widget: slider
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
@@ -102,13 +103,13 @@ blocks:
     gui_hint: ''
     label: IF gain
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '10'
     step: '10'
     stop: '60'
     value: var_if_gain
-    widget: slider
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
@@ -123,13 +124,13 @@ blocks:
     gui_hint: ''
     label: RF gain
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '10'
     step: '10'
     stop: '60'
     value: var_rf_gain
-    widget: slider
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
@@ -149,27 +150,6 @@ blocks:
     coordinate: [8, 68]
     rotation: 0
     state: enabled
-- name: sample_rate
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    gui_hint: ''
-    label: Sample rate
-    min_len: '200'
-    orient: Qt.Horizontal
-    rangeType: float
-    start: 2e6
-    step: '10'
-    stop: 20e6
-    value: samp_rate
-    widget: slider
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [743, 17]
-    rotation: 0
-    state: true
 - name: var_bandwidth
   id: variable
   parameters:
@@ -254,7 +234,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    ant0: '1'
+    ant0: ''
     ant1: ''
     ant10: ''
     ant11: ''
@@ -286,7 +266,7 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: ''
+    args: bladerf=0
     bb_gain0: bb_gain
     bb_gain1: '20'
     bb_gain10: '20'
@@ -492,7 +472,7 @@ blocks:
     minoutbuf: '0'
     nchan: '1'
     num_mboards: '1'
-    sample_rate: sample_rate
+    sample_rate: bandwidth+bandwidth/80
     sync: sync
     time_source0: ''
     time_source1: ''
@@ -521,7 +501,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [331, 416]
+    coordinate: [304, 420.0]
     rotation: 0
     state: enabled
 
@@ -530,3 +510,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: 3.10.5.1

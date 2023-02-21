@@ -6,9 +6,9 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Jammer Gen
-# GNU Radio version: 3.8.2.0
+# GNU Radio version: 3.10.5.1
 
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -23,6 +23,7 @@ if __name__ == '__main__':
 from gnuradio import analog
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from PyQt5 import Qt
@@ -30,20 +31,20 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
+from PyQt5 import QtCore
+from xmlrpc.server import SimpleXMLRPCServer
+import threading
 import osmosdr
 import time
-try:
-    from xmlrpc.server import SimpleXMLRPCServer
-except ImportError:
-    from SimpleXMLRPCServer import SimpleXMLRPCServer
-import threading
+
+
 
 from gnuradio import qtgui
 
 class jammer_gen(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Jammer Gen")
+        gr.top_block.__init__(self, "Jammer Gen", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Jammer Gen")
         qtgui.util.check_set_qss()
@@ -82,7 +83,6 @@ class jammer_gen(gr.top_block, Qt.QWidget):
         self.var_bb_gain = var_bb_gain = 10
         self.var_bandwidth = var_bandwidth = 10e6
         self.samp_rate = samp_rate = 5e6
-        self.sample_rate = sample_rate = samp_rate
         self.rf_gain = rf_gain = var_rf_gain
         self.if_gain = if_gain = var_if_gain
         self.cent_freq = cent_freq = var_cent_freq
@@ -92,43 +92,40 @@ class jammer_gen(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self._sample_rate_range = Range(2e6, 20e6, 10, samp_rate, 200)
-        self._sample_rate_win = RangeWidget(self._sample_rate_range, self.set_sample_rate, 'Sample rate', "slider", float)
-        self.top_grid_layout.addWidget(self._sample_rate_win)
+
         self._rf_gain_range = Range(10, 60, 10, var_rf_gain, 200)
-        self._rf_gain_win = RangeWidget(self._rf_gain_range, self.set_rf_gain, 'RF gain', "slider", float)
-        self.top_grid_layout.addWidget(self._rf_gain_win)
+        self._rf_gain_win = RangeWidget(self._rf_gain_range, self.set_rf_gain, "RF gain", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._rf_gain_win)
         self._if_gain_range = Range(10, 60, 10, var_if_gain, 200)
-        self._if_gain_win = RangeWidget(self._if_gain_range, self.set_if_gain, 'IF gain', "slider", float)
-        self.top_grid_layout.addWidget(self._if_gain_win)
+        self._if_gain_win = RangeWidget(self._if_gain_range, self.set_if_gain, "IF gain", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._if_gain_win)
         self._cent_freq_range = Range(900e6, 2200e6, 500, var_cent_freq, 200)
-        self._cent_freq_win = RangeWidget(self._cent_freq_range, self.set_cent_freq, 'Freq', "slider", float)
-        self.top_grid_layout.addWidget(self._cent_freq_win)
+        self._cent_freq_win = RangeWidget(self._cent_freq_range, self.set_cent_freq, "Freq", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._cent_freq_win)
         self._bb_gain_range = Range(10, 60, 10, var_bb_gain, 200)
-        self._bb_gain_win = RangeWidget(self._bb_gain_range, self.set_bb_gain, 'BB gain', "slider", float)
-        self.top_grid_layout.addWidget(self._bb_gain_win)
+        self._bb_gain_win = RangeWidget(self._bb_gain_range, self.set_bb_gain, "BB gain", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._bb_gain_win)
         self._bandwidth_range = Range(2e6, 50e6, 10, var_bandwidth, 200)
-        self._bandwidth_win = RangeWidget(self._bandwidth_range, self.set_bandwidth, 'Bandwidth', "slider", float)
-        self.top_grid_layout.addWidget(self._bandwidth_win)
+        self._bandwidth_win = RangeWidget(self._bandwidth_range, self.set_bandwidth, "Bandwidth", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._bandwidth_win)
         self.xmlrpc_server_0 = SimpleXMLRPCServer(('localhost', 8888), allow_none=True)
         self.xmlrpc_server_0.register_instance(self)
         self.xmlrpc_server_0_thread = threading.Thread(target=self.xmlrpc_server_0.serve_forever)
         self.xmlrpc_server_0_thread.daemon = True
         self.xmlrpc_server_0_thread.start()
         self.osmosdr_sink_0 = osmosdr.sink(
-            args="numchan=" + str(1) + " " + ''
+            args="numchan=" + str(1) + " " + 'bladerf=0'
         )
         self.osmosdr_sink_0.set_time_unknown_pps(osmosdr.time_spec_t())
-        self.osmosdr_sink_0.set_sample_rate(sample_rate)
+        self.osmosdr_sink_0.set_sample_rate((bandwidth+bandwidth/80))
         self.osmosdr_sink_0.set_center_freq(cent_freq, 0)
         self.osmosdr_sink_0.set_freq_corr(0, 0)
         self.osmosdr_sink_0.set_gain(rf_gain, 0)
         self.osmosdr_sink_0.set_if_gain(if_gain, 0)
         self.osmosdr_sink_0.set_bb_gain(bb_gain, 0)
-        self.osmosdr_sink_0.set_antenna('1', 0)
+        self.osmosdr_sink_0.set_antenna('', 0)
         self.osmosdr_sink_0.set_bandwidth(bandwidth, 0)
         self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, 50, 0)
-
 
 
         ##################################################
@@ -140,6 +137,9 @@ class jammer_gen(gr.top_block, Qt.QWidget):
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "jammer_gen")
         self.settings.setValue("geometry", self.saveGeometry())
+        self.stop()
+        self.wait()
+
         event.accept()
 
     def get_var_rf_gain(self):
@@ -182,14 +182,6 @@ class jammer_gen(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.set_sample_rate(self.samp_rate)
-
-    def get_sample_rate(self):
-        return self.sample_rate
-
-    def set_sample_rate(self, sample_rate):
-        self.sample_rate = sample_rate
-        self.osmosdr_sink_0.set_sample_rate(self.sample_rate)
 
     def get_rf_gain(self):
         return self.rf_gain
@@ -224,8 +216,8 @@ class jammer_gen(gr.top_block, Qt.QWidget):
 
     def set_bandwidth(self, bandwidth):
         self.bandwidth = bandwidth
+        self.osmosdr_sink_0.set_sample_rate((self.bandwidth+self.bandwidth/80))
         self.osmosdr_sink_0.set_bandwidth(self.bandwidth, 0)
-
 
 
 
@@ -244,6 +236,9 @@ def main(top_block_cls=jammer_gen, options=None):
     tb.show()
 
     def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+
         Qt.QApplication.quit()
 
     signal.signal(signal.SIGINT, sig_handler)
@@ -253,11 +248,6 @@ def main(top_block_cls=jammer_gen, options=None):
     timer.start(500)
     timer.timeout.connect(lambda: None)
 
-    def quitting():
-        tb.stop()
-        tb.wait()
-
-    qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
 
 if __name__ == '__main__':

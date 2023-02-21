@@ -6,6 +6,9 @@
 # <sebastien.dudek(<@T>)penthertz.com> wrote this file. As long as you retain this notice you
 # can do whatever you want with this stuff. If we meet some day, and you think
 # this stuff is worth it, you can buy me a beer in return FlUxIuS ;)
+#
+# We would like to thank our contributors for maintening this code:
+# - @h0rac Grzegorz Wypych from PWNsec.pl
 # ----------------------------------------------------------------------------
 
 from __future__ import print_function
@@ -77,9 +80,9 @@ if __name__ == "__main__":
                     cbandwidth = int(val['bandwidth'].replace('MHz',''))
             try:
                 if ctype == '3G':
-                    downlink, uplink = uarfcn2freq(band, findex, None)
+                    downlink, uplink = uarfcn2freq(int(band), findex, None)
                 elif ctype == '4G':
-                    downlink, uplink = earfcn2freq(band, findex, None)
+                    downlink, uplink = earfcn2freq(int(band), findex, None)
                 elif ctype == '2G':
                     pass
                     # not implemented for our purposes
@@ -92,8 +95,14 @@ if __name__ == "__main__":
             except Exception as e:
                 print (e)
     while True:
-        for key, val in t_freqs.items():
-            print ("[+] Jamming cell {cell} central frequency at {freq} MHz with {bandwidth} MHz bandwidth".format(cell=key, freq=val['freq'], bandwidth=val['bandwidth']))
-            s.set_var_cent_freq(val['freq']*1000000)
-            s.set_var_bandwidth(val['bandwidth']*1000000)
-            time.sleep(delay)
+        try:
+            for key, val in t_freqs.items():
+                print ("[+] Jamming cell {cell} central frequency at {freq} MHz with {bandwidth} MHz bandwidth".format(cell=key, freq=val['freq'], bandwidth=val['bandwidth']))
+                s.set_var_cent_freq(val['freq']*1000000)
+                s.set_var_bandwidth(val['bandwidth']*1000000)
+                time.sleep(delay)
+        except:
+            print('Stopping jammer...')
+            state = False
+            break
+
