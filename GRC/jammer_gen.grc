@@ -86,7 +86,7 @@ blocks:
     rangeType: float
     start: 900e6
     step: '500'
-    stop: 2200e6
+    stop: 2700e6
     value: var_cent_freq
     widget: counter_slider
   states:
