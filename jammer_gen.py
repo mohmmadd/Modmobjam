@@ -99,7 +99,7 @@ class jammer_gen(gr.top_block, Qt.QWidget):
         self._if_gain_range = Range(10, 60, 10, var_if_gain, 200)
         self._if_gain_win = RangeWidget(self._if_gain_range, self.set_if_gain, "IF gain", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._if_gain_win)
-        self._cent_freq_range = Range(900e6, 2200e6, 500, var_cent_freq, 200)
+        self._cent_freq_range = Range(900e6, 2700e6, 500, var_cent_freq, 200)
         self._cent_freq_win = RangeWidget(self._cent_freq_range, self.set_cent_freq, "Freq", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._cent_freq_win)
         self._bb_gain_range = Range(10, 60, 10, var_bb_gain, 200)
